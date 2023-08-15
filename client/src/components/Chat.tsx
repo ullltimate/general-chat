@@ -1,13 +1,33 @@
 import { Button, Col, Form, InputGroup } from 'react-bootstrap';
+import { socket } from '../socket';
+import { useState, useEffect } from 'react';
 
 function Chat() {
+  const [message, setMessage] = useState('');
+  const [messages, setMessages] = useState<any[]>([]);
 
+  useEffect(()=>{
+    socket.connect();
+
+    socket.on('chat message', function(msg) {
+      messages.push(msg)
+      setMessages(messages)
+    });
+  },[])
+  function sendMessage(e: any){
+    e.preventDefault();
+    if (message) {
+      socket.emit('chat message', message);
+      setMessage('');
+    }
+  }
+  
     return (
       <>
         <Col xs={8} className='p-0 border border-3 border-info rounded-end position-relative'>
             <h2 className='p-3 bg-info text-white'><i className="bi bi-wechat"></i> General chat</h2>
             <div>
-              
+              {messages.map((el, i) => <p key={i}>{el}</p>)}
             </div>
             <InputGroup className="position-absolute bottom-0">
               <Form.Control
@@ -17,14 +37,16 @@ function Chat() {
                 aria-describedby="basic-addon2"
                 as="textarea"
                 rows={1}
+                value={message}
+                onChange={(e) => setMessage(e.target.value)}
               />
-              <Button variant="outline-info" id="button-addon2">
+              <Button variant="outline-info" id="button-addon2" type='submit' onClick={(e)=>sendMessage(e)}>
                 Send <i className="bi bi-send"></i>
               </Button>
             </InputGroup>
         </Col>
       </>
     )
-  }
+}
   
   export default Chat
