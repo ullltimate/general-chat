@@ -15,6 +15,8 @@ function Chat() {
                 placeholder="Enter your message"
                 aria-label="Recipient's username"
                 aria-describedby="basic-addon2"
+                as="textarea"
+                rows={1}
               />
               <Button variant="outline-info" id="button-addon2">
                 Send <i className="bi bi-send"></i>
