@@ -1,8 +1,6 @@
 import { Badge, Col, Row, Stack } from "react-bootstrap"
 
 function Message(props:any) {
-    console.log(props.date)
-  
     return (
       <>
         <Stack direction="horizontal" gap={2}>
@@ -17,8 +15,8 @@ function Message(props:any) {
             </Badge>
         </Stack>
         <Row className="mb-3">
-            <Col xs={'auto'}>{props.date}</Col>
-            <Col xs={8}>{props.messageText}</Col>
+            <Col xs={'auto'}>{new Date(Date.parse(props.date)).toDateString()}</Col>
+            <Col xs={'auto'}>{props.messageText}</Col>
         </Row>
       </>
     )

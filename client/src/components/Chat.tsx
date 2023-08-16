@@ -2,6 +2,7 @@ import { Button, Col, Form, InputGroup } from 'react-bootstrap';
 import { socket } from '../socket';
 import { useState, useEffect } from 'react';
 import Message from './Message';
+import { addMessage, getMessages } from '../api/api';
 
 function Chat() {
   const [message, setMessage] = useState('');
@@ -10,6 +11,7 @@ function Chat() {
 
   useEffect(()=>{
     socket.connect();
+    getMessages(setMessages);
     return () => {
       socket.disconnect();
     };
@@ -27,6 +29,7 @@ function Chat() {
     if (message) {
       socket.emit('message', message, onMessageEvent);
       setMessage('');
+      addMessage(message)
     }
   }
 
@@ -35,7 +38,7 @@ function Chat() {
       {
         messageText: data,
         tags: [],
-        sendMessage: date.toDateString()
+        sendMessage: date.toISOString()
       }
     ))
   }
@@ -47,7 +50,9 @@ function Chat() {
         <Col xs={8} className='p-0 border border-3 border-info rounded-end position-relative'>
             <h2 className='p-3 bg-info text-white'><i className="bi bi-wechat"></i> General chat</h2>
             <div>
-              {messages.map((el, i) => <Message key={i} messageText={el.messageText} date={el.sendMessage}/>)}
+              { 
+               messages.map((el, i) => <Message key={i} messageText={el.messageText} date={el.sendMessage}/>)
+              }
             </div>
             <InputGroup className="position-absolute bottom-0">
               <Form.Control

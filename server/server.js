@@ -15,9 +15,6 @@ const io = new Server(server, {
 
 app.use(corsMiddleware);
 app.use(express.json());
-app.use('/', (req, res)=>{
-    res.send('API works')
-})
 app.use("/", messageRouter);
 
 io.sockets.on('connection', (socket) => {
