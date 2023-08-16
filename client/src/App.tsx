@@ -3,6 +3,7 @@ import 'bootstrap-icons/font/bootstrap-icons.css';
 import { Container, Row } from 'react-bootstrap';
 import Tags from './components/Tags';
 import Chat from './components/Chat';
+import './App.css'
 
 function App() {
 
