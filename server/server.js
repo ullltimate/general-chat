@@ -15,17 +15,17 @@ const io = new Server(server, {
 
 app.use(corsMiddleware);
 app.use(express.json());
+app.use('/', (req, res)=>{
+    res.send('API works')
+})
 app.use("/", messageRouter);
 
-//io.on('connection', (socket) => {
-//  console.log('a user connected');
-//});
-//io.emit('some event', { someProperty: 'some value', otherProperty: 'other value' });
-//io.on('connection', (socket) => {
-//    socket.on('chat message', (msg) => {
-//      io.emit('chat message', msg);
-//    });
-//  });
+io.sockets.on('connection', (socket) => {
+   socket.on('message', (text, cb)=>{
+    socket.broadcast.emit('message', text);
+    cb(text)
+   })
+  });
 
 const start = async () => {
     try {
@@ -39,4 +39,4 @@ const start = async () => {
     }
 }
 
-start()
+start();

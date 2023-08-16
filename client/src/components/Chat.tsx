@@ -8,19 +8,30 @@ function Chat() {
 
   useEffect(()=>{
     socket.connect();
-
-    socket.on('chat message', function(msg) {
-      messages.push(msg)
-      setMessages(messages)
-    });
+    return () => {
+      socket.disconnect();
+    };
   },[])
+  useEffect(() => {
+    socket.on('message', function(data) {
+      setMessages(messages.concat(data))
+    });
+    return () => {
+      socket.off('message', function(data) {
+        setMessages(messages.concat(data))
+      });
+    };
+  },[messages])
   function sendMessage(e: any){
     e.preventDefault();
     if (message) {
-      socket.emit('chat message', message);
+      socket.emit('message', message, function(data:any) {
+        setMessages(messages.concat(data))
+      });
       setMessage('');
     }
   }
+  console.log(messages)
   
     return (
       <>
