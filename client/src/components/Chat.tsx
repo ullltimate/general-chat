@@ -1,10 +1,12 @@
 import { Button, Col, Form, InputGroup } from 'react-bootstrap';
 import { socket } from '../socket';
 import { useState, useEffect } from 'react';
+import Message from './Message';
 
 function Chat() {
   const [message, setMessage] = useState('');
   const [messages, setMessages] = useState<any[]>([]);
+  const date = new Date();
 
   useEffect(()=>{
     socket.connect();
@@ -12,25 +14,32 @@ function Chat() {
       socket.disconnect();
     };
   },[])
+
   useEffect(() => {
-    socket.on('message', function(data) {
-      setMessages(messages.concat(data))
-    });
+    socket.on('message', onMessageEvent);
     return () => {
-      socket.off('message', function(data) {
-        setMessages(messages.concat(data))
-      });
+      socket.off('message', onMessageEvent);
     };
   },[messages])
+
   function sendMessage(e: any){
     e.preventDefault();
     if (message) {
-      socket.emit('message', message, function(data:any) {
-        setMessages(messages.concat(data))
-      });
+      socket.emit('message', message, onMessageEvent);
       setMessage('');
     }
   }
+
+  function onMessageEvent(data:any){
+    setMessages(messages.concat(
+      {
+        messageText: data,
+        tags: [],
+        sendMessage: date.toDateString()
+      }
+    ))
+  }
+
   console.log(messages)
   
     return (
@@ -38,7 +47,7 @@ function Chat() {
         <Col xs={8} className='p-0 border border-3 border-info rounded-end position-relative'>
             <h2 className='p-3 bg-info text-white'><i className="bi bi-wechat"></i> General chat</h2>
             <div>
-              {messages.map((el, i) => <p key={i}>{el}</p>)}
+              {messages.map((el, i) => <Message key={i} messageText={el.messageText} date={el.sendMessage}/>)}
             </div>
             <InputGroup className="position-absolute bottom-0">
               <Form.Control
