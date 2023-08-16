@@ -6,7 +6,9 @@ import { addMessage, getMessages } from '../api/api';
 
 function Chat() {
   const [message, setMessage] = useState('');
+  const [value, setValue] = useState('');
   const [messages, setMessages] = useState<any[]>([]);
+  const [tags, setTags] = useState<string[]>([]);
   const date = new Date();
 
   useEffect(()=>{
@@ -27,23 +29,31 @@ function Chat() {
   function sendMessage(e: any){
     e.preventDefault();
     if (message) {
-      socket.emit('message', message, onMessageEvent);
-      setMessage('');
-      addMessage(message)
+      socket.emit('message', [message, tags], onMessageEvent);
+      setValue('');
+      addMessage(message, tags);
     }
   }
 
   function onMessageEvent(data:any){
     setMessages(messages.concat(
       {
-        messageText: data,
-        tags: [],
+        messageText: data[0],
+        tags: data[1],
         sendMessage: date.toISOString()
       }
     ))
   }
 
-  console.log(messages)
+  function separateMessageTag(value:string){
+    setValue(value)
+    let strMessage = value.replace(new RegExp(`#.*`), '');
+    setMessage(strMessage);
+    if(value.includes('#')){
+      let arrTags = value.replace(/^.+?#/, '').split('#');
+      setTags(arrTags);
+    }
+  }
   
     return (
       <>
@@ -62,8 +72,8 @@ function Chat() {
                 aria-describedby="basic-addon2"
                 as="textarea"
                 rows={1}
-                value={message}
-                onChange={(e) => setMessage(e.target.value)}
+                value={value}
+                onChange={(e) => separateMessageTag(e.target.value)}
               />
               <Button variant="outline-info" id="button-addon2" type='submit' onClick={(e)=>sendMessage(e)}>
                 Send <i className="bi bi-send"></i>
