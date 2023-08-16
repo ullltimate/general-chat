@@ -51,7 +51,7 @@ function Chat() {
             <h2 className='p-3 bg-info text-white'><i className="bi bi-wechat"></i> General chat</h2>
             <div>
               { 
-               messages.map((el, i) => <Message key={i} messageText={el.messageText} date={el.sendMessage}/>)
+               messages.map((el, i) => <Message key={i} messageText={el.messageText} date={el.sendMessage} tags={el.tags}/>)
               }
             </div>
             <InputGroup className="position-absolute bottom-0">
