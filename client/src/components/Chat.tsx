@@ -17,13 +17,14 @@ function Chat() {
 
   useEffect(()=>{
     socket.connect();
-    getMessages(setMessages);
-    setDefaultTags(['greeting', 'name', 'farewell', 'smile', 'xa-xa', 'help', 'films', 'comedy'])
-    setOnTags(['greeting', 'name', 'farewell', 'smile', 'xa-xa', 'help','films', 'comedy', []])
+    getMessages(setMessages, setDefaultTags, setOnTags);
     return () => {
       socket.disconnect();
     };
   },[])
+
+  console.log(allDefaultTags)
+  console.log(onTags)
 
   useEffect(() => {
     socket.on('message', onMessageEvent);
