@@ -1,6 +1,6 @@
 import axios from "axios";
 
-const urlAPI: string = 'http://localhost:4000'
+const urlAPI: string = 'https://general-chat-production.up.railway.app'
 
 export const getMessages = async (setMessages: any) => {
     try {
