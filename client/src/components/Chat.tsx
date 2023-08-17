@@ -17,13 +17,14 @@ function Chat() {
 
   useEffect(()=>{
     socket.connect();
-    getMessages(setMessages);
-    setDefaultTags(['greeting', 'name', 'farewell', 'smile', 'xa-xa', 'help'])
-    setOnTags(['greeting', 'name', 'farewell', 'smile', 'xa-xa', 'help', []])
+    getMessages(setMessages, setDefaultTags, setOnTags);
     return () => {
       socket.disconnect();
     };
   },[])
+
+  console.log(allDefaultTags)
+  console.log(onTags)
 
   useEffect(() => {
     socket.on('message', onMessageEvent);
@@ -38,6 +39,7 @@ function Chat() {
       socket.emit('message', [message, tags], onMessageEvent);
       setValue('');
       addMessage(message, tags);
+      setOnTags(Array.from(new Set(onTags.concat(tags))));
     }
   }
 

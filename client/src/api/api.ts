@@ -2,10 +2,12 @@ import axios from "axios";
 
 const urlAPI: string = 'https://general-chat-production.up.railway.app'
 
-export const getMessages = async (setMessages: any) => {
+export const getMessages = async (setMessages: any, setDefaultTags:any, setOnTags: any) => {
     try {
         const response = await axios.get(`${urlAPI}/messages`);
         setMessages(response.data);
+        setDefaultTags(Array.from(new Set(response.data.map((el:any)=>el.tags).flat())));
+        setOnTags(Array.from(new Set(response.data.map((el:any)=>el.tags).flat())).concat([[]]))
     } catch (error: any) {
         console.log(error.response.data.message)
     }
