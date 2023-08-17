@@ -1,0 +1,4 @@
+{
+    "serverPort": 4000,
+    "dbUrl": "mongodb+srv://ullltimate:qwer1234@cluster0.j5gwrz6.mongodb.net/chat?retryWrites=true&w=majority"
+}
