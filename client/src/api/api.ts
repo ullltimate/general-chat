@@ -22,3 +22,14 @@ export const addMessage = async (messageText: string, tags?: any) => {
         console.log(error.response.data.message)
     }
 }
+
+export const filterMessage = async (tags: any, setMessages: any) => {
+    try {
+        const response = await axios.post(`${urlAPI}/tags`, {
+           tags
+        })
+        setMessages(response.data)
+    } catch (error: any) {
+        console.log(error.response.data.message)
+    }
+}

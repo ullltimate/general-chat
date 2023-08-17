@@ -17,7 +17,7 @@ router.post('/message', async (req, res) => {
 router.post('/tags', async (req, res) => {
     try {
         const {tags} = req.body;
-        const messages = await Message.find({tags});
+        const messages = await Message.find({tags: {$in: tags}});
         return res.json(messages)
     } catch (e) {
         console.log(e);

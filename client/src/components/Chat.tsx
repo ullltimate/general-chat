@@ -2,7 +2,7 @@ import { Button, Col, Form, InputGroup, Stack } from 'react-bootstrap';
 import { socket } from '../socket';
 import { useState, useEffect } from 'react';
 import Message from './Message';
-import { addMessage, getMessages } from '../api/api';
+import { addMessage, filterMessage, getMessages } from '../api/api';
 import Tag from './Tag';
 
 function Chat() {
@@ -18,6 +18,8 @@ function Chat() {
   useEffect(()=>{
     socket.connect();
     getMessages(setMessages);
+    setDefaultTags(['greeting', 'name', 'farewell', 'smile', 'xa-xa', 'help'])
+    setOnTags(['greeting', 'name', 'farewell', 'smile', 'xa-xa', 'help', []])
     return () => {
       socket.disconnect();
     };
@@ -59,30 +61,27 @@ function Chat() {
     }
   }
 
-  useEffect(()=>{
-    setDefaultTags(Array.from(new Set(messages.map((e) => e.tags).flat())));
-    setOnTags(Array.from(new Set(messages.map((e) => e.tags).flat())));
-  },[messages])
-
-  function cancelTags(elem: string, tags: string[]){
-    let onTags = tags.filter(function(f) { return f !== elem })
+  async function cancelTags(elem: string, tags: string[]){
+    let onTags = tags.filter(function(f) { return f !== elem });
     setOnTags(onTags);
+    await filterMessage(onTags, setMessages);
   }
 
-  function addTags(){
-    if(!onTags.includes(valueTags)) setOnTags(onTags.concat(valueTags));
-    setValueTags('')
+  async function addTags(tags: any, value:string){
+    if(!tags.includes(value)){
+      tags.push(value) 
+      setOnTags(tags);
+    };
+    await filterMessage(tags, setMessages);
+    setValueTags('');
   }
-
-  console.log(allDefaultTags)
-  console.log(onTags)
   
     return (
       <>
         <Col xs={4} className='p-0 border border-3 border-end-0 border-info rounded-start position-relative'>
           <h2 className='p-3 bg-info text-white'># Tags</h2>
           <Stack direction="vertical" gap={2}>
-            {onTags.map((e, i)=><Tag key={i} tagName={e} onClick={()=>{cancelTags(e, onTags)}}/>)}
+            {onTags.filter((el)=> typeof el === 'string' && el !== '').map((e, i)=><Tag key={i} tagName={e} onClick={async()=>{await cancelTags(e, onTags)}}/>)}
           </Stack>
           <InputGroup className="position-absolute bottom-0">
             <Form.Control 
@@ -95,7 +94,7 @@ function Chat() {
             <datalist id="option-datalist">
               {allDefaultTags.map((elem, i)=><option key={i} value={elem}></option>)}
             </datalist>
-            <Button variant="outline-info" id="button-addon2" onClick={()=>addTags()}>
+            <Button variant="outline-info" id="button-addon2" onClick={async()=>{await addTags(onTags, valueTags)}}>
               Send <i className="bi bi-send"></i>
             </Button>
           </InputGroup>
