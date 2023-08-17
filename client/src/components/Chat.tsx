@@ -101,7 +101,7 @@ function Chat() {
         </Col>
         <Col xs={8} className='p-0 border border-3 border-info rounded-end position-relative'>
             <h2 className='p-3 bg-info text-white'><i className="bi bi-wechat"></i> General chat</h2>
-            <div className='messages__overflow'>
+            <div className='ps-3 messages__overflow'>
               { 
                messages.map((el, i) => <Message key={i} messageText={el.messageText} date={el.sendMessage} tags={el.tags}/>)
               }
