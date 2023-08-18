@@ -23,9 +23,6 @@ function Chat() {
     };
   },[])
 
-  console.log(allDefaultTags)
-  console.log(onTags)
-
   useEffect(() => {
     socket.on('message', onMessageEvent);
     return () => {
@@ -51,6 +48,7 @@ function Chat() {
         sendMessage: date.toISOString()
       }
     ))
+    setOnTags(Array.from(new Set(onTags.concat(data[1]))));
   }
 
   function separateMessageTag(value:string){
@@ -82,7 +80,7 @@ function Chat() {
       <>
         <Col xs={4} className='p-0 border border-3 border-end-0 border-info rounded-start position-relative'>
           <h2 className='p-3 bg-info text-white'># Tags</h2>
-          <Stack direction="vertical" gap={2}>
+          <Stack direction="vertical" gap={2} className='messages__overflow'>
             {onTags.filter((el)=> typeof el === 'string' && el !== '').map((e, i)=><Tag key={i} tagName={e} onClick={async()=>{await cancelTags(e, onTags)}}/>)}
           </Stack>
           <InputGroup className="position-absolute bottom-0">
